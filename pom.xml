@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.youtube</groupId>
-    <artifactId>jwt</artifactId>
+    <artifactId>ecommerce</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>jwt-youtube</name>
-    <description>Demo project to understand JWT token + role based authentication</description>
+    <name>e-commerce-backend</name>
+    <description>API's for e commerce application</description>
     <properties>
         <java.version>1.8</java.version>
     </properties>
@@ -53,6 +53,10 @@
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>
             <version>0.9.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
         </dependency>
     </dependencies>
 
