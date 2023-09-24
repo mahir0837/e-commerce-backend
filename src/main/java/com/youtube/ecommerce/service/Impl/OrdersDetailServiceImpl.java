@@ -65,11 +65,12 @@ public class OrdersDetailServiceImpl implements OrdersDetailService {
 
     @Override
     public List<OrderDetail> gettAllOrder() {
-        List<OrderDetail>orderDetailList=new ArrayList<>();
-        ordersDetailServiceDao.findAll().forEach(
-                x->orderDetailList.add(x)
-        );
-        return orderDetailList;
+//        List<OrderDetail>orderDetailList=new ArrayList<>();
+//        ordersDetailServiceDao.findAll().forEach(
+//                x->orderDetailList.add(x)
+//        );
+//        return orderDetailList;
+        return ordersDetailServiceDao.findAll();
     }
 
     private Double calculateOrderAmount(OrderProductQuantity o) {
