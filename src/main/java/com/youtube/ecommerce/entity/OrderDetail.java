@@ -26,10 +26,11 @@ public class OrderDetail {
     private Product product;
     @OneToOne
     private User user;
+    private String transectionId;
 
     public OrderDetail(String orderFullName, String orderFullAddress, String orderContactNumber,
                        String orderAlternateContactNumber, String orderStatus,
-                       Double orderAmount, Product product, User user) {
+                       Double orderAmount, Product product, User user,String transectionId) {
         this.orderFullName = orderFullName;
         this.orderFullAddress = orderFullAddress;
         this.orderContactNumber = orderContactNumber;
@@ -38,5 +39,6 @@ public class OrderDetail {
         this.orderAmount = orderAmount;
         this.product = product;
         this.user = user;
+        this.transectionId=transectionId;
     }
 }
