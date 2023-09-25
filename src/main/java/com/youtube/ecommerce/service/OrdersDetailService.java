@@ -8,7 +8,7 @@ import java.util.List;
 public interface OrdersDetailService {
     void placeOrder(OrderInput orderInput,boolean isSingleProductChekout);
     List<OrderDetail> getOrderDetails();
-    List<OrderDetail>gettAllOrder();
+    List<OrderDetail>gettAllOrder(String status);
 
     OrderDetail markOrderAsDelivere(Long id);
 }

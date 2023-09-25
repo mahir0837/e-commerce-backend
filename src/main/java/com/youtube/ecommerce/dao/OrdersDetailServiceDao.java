@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface OrdersDetailServiceDao extends JpaRepository<OrderDetail,Long> {
     List<OrderDetail> findByUser(User user);
+
+    List<OrderDetail> findByOrderStatus(String status);
 }

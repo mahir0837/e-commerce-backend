@@ -65,13 +65,21 @@ public class OrdersDetailServiceImpl implements OrdersDetailService {
     }
 
     @Override
-    public List<OrderDetail> gettAllOrder() {
-//        List<OrderDetail>orderDetailList=new ArrayList<>();
-//        ordersDetailServiceDao.findAll().forEach(
-//                x->orderDetailList.add(x)
-//        );
-//        return orderDetailList;
-        return ordersDetailServiceDao.findAll();
+    public List<OrderDetail> gettAllOrder(String status) {
+        List<OrderDetail>orderDetailList=new ArrayList<>();
+
+        if (status.equals("All")){
+            ordersDetailServiceDao.findAll().forEach(
+                    x->orderDetailList.add(x)
+            );
+            return orderDetailList;
+        } else {
+            ordersDetailServiceDao.findByOrderStatus(status).forEach(
+                    x->orderDetailList.add(x)
+            );
+            return orderDetailList;
+        }
+
     }
 
     @Override
