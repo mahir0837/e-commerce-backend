@@ -9,4 +9,6 @@ public interface OrdersDetailService {
     void placeOrder(OrderInput orderInput,boolean isSingleProductChekout);
     List<OrderDetail> getOrderDetails();
     List<OrderDetail>gettAllOrder();
+
+    OrderDetail markOrderAsDelivere(Long id);
 }

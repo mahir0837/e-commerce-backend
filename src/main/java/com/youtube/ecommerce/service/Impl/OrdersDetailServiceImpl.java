@@ -26,6 +26,7 @@ public class OrdersDetailServiceImpl implements OrdersDetailService {
     private CartService cartService;
 
     private static final String ORDER_PLACE = "Placed";
+        private static final String ORDER_DELIVERED = "Delivered";
     @Autowired
     private CartDao cartDao;
 
@@ -71,6 +72,13 @@ public class OrdersDetailServiceImpl implements OrdersDetailService {
 //        );
 //        return orderDetailList;
         return ordersDetailServiceDao.findAll();
+    }
+
+    @Override
+    public OrderDetail markOrderAsDelivere(Long id) {
+        OrderDetail orderDetail=ordersDetailServiceDao.findById(id).get();
+        orderDetail.setOrderStatus(ORDER_DELIVERED);
+        return ordersDetailServiceDao.save(orderDetail);
     }
 
     private Double calculateOrderAmount(OrderProductQuantity o) {
