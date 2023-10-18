@@ -1,8 +1,10 @@
 package com.youtube.ecommerce.controller;
 
+import com.youtube.ecommerce.dto.UserDto;
 import com.youtube.ecommerce.entity.User;
-import com.youtube.ecommerce.service.UserService;
+import com.youtube.ecommerce.service.Impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,7 +17,7 @@ import javax.annotation.PostConstruct;
 public class UserController {
 
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userService;
 
     @PostConstruct
     public void initRoleAndUser() {
@@ -23,8 +25,8 @@ public class UserController {
     }
 
     @PostMapping({"/registerNewUser"})
-    public User registerNewUser(@RequestBody User user) {
-        return userService.registerNewUser(user);
+    public ResponseEntity<User> registerNewUser(@RequestBody User user) {
+        return ResponseEntity.ok(userService.registerNewUser(user));
     }
 
     @GetMapping({"/forAdmin"})

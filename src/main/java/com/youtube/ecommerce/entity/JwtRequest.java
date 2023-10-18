@@ -2,7 +2,17 @@ package com.youtube.ecommerce.entity;
 
 public class JwtRequest {
 
+    private Long id;
     private String userName;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     private String userPassword;
 
     public String getUserName() {

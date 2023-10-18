@@ -1,10 +1,16 @@
 package com.youtube.ecommerce.service.Impl;
 
+import com.youtube.ecommerce.dao.CategoryDao;
 import com.youtube.ecommerce.dao.ProductDao;
+import com.youtube.ecommerce.dto.CartDto;
+import com.youtube.ecommerce.dto.ProductDto;
 import com.youtube.ecommerce.entity.Cart;
+import com.youtube.ecommerce.entity.Category;
 import com.youtube.ecommerce.entity.ImageModel;
 import com.youtube.ecommerce.entity.Product;
+import com.youtube.ecommerce.mapper.MapperUtil;
 import com.youtube.ecommerce.service.CartService;
+import com.youtube.ecommerce.service.CategoryService;
 import com.youtube.ecommerce.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -26,13 +32,29 @@ public class ProductServiceImpl implements ProductService {
     private ProductDao productDao;
     @Autowired
     private CartService cartService;
+    @Autowired
+    MapperUtil mapperUtil;
+    @Autowired
+    private CategoryService categoryService;
+    @Autowired
+    private CategoryDao categoryDao;
 
     @Override
-    public Product addNewProduct(Product product, MultipartFile[] file) {
+    public Product addNewProduct(ProductDto productDto, MultipartFile[] file) {
+        Product product=new Product();
         try {
             Set<ImageModel> images = uploadImage(file);
             product.setProductImages(images);
-            return productDao.save(product);
+            product.setProductId(productDto.getProductId());
+            product.setProductName(productDto.getProductName());
+            product.setProductDescription(productDto.getProductDescription());
+            product.setProductDiscountedPrice(productDto.getProductDiscountedPrice());
+            product.setProductActualPrice(productDto.getProductActualPrice());
+            Category category=categoryDao.findById(productDto.getProductCategory()).get();
+            product.setProductCategory(category);
+            return  productDao.save(product);
+
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -40,13 +62,15 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> listAllProduct(int pageNumber, String serachKey) {
+    public List<Product> listAllProduct(int pageNumber, String searchKey, Long categoryId) {
         Pageable pageable = PageRequest.of(pageNumber, 4);
-        if (serachKey.equals("")) {
-            return productDao.findAllProduct(pageable);
+
+        if (searchKey.equals("")&& categoryId==0) {
+            List<Product>productList= productDao.findAllProduct(pageable);
+            return productList;
         } else {
-            return productDao.findProductsWithKey(
-                    serachKey, serachKey, pageable);
+            List<Product>productList= productDao.findProductsWithKey(searchKey, searchKey, categoryId,pageable);
+            return productList;
         }
 
     }
@@ -64,7 +88,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product getPRoductById(Long productId) {
-        return productDao.findById(productId).get();
+        Product product=productDao.findById(productId).get();
+        return product;
     }
 
     @Override
@@ -76,7 +101,8 @@ public class ProductServiceImpl implements ProductService {
             return productList;
         } else {
             List<Cart>carts=cartService.getCardDetailById();
-            return carts.stream().map(Cart::getProduct).collect(Collectors.toList());
+            List<Product> productList =carts.stream().map(Cart::getProduct).collect(Collectors.toList());
+           return productList;
 
         }
 

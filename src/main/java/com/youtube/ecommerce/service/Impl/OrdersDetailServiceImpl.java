@@ -2,12 +2,15 @@ package com.youtube.ecommerce.service.Impl;
 
 import com.razorpay.Order;
 import com.razorpay.RazorpayClient;
-import com.razorpay.RazorpayException;
 import com.youtube.ecommerce.configuration.JwtRequestFilter;
 import com.youtube.ecommerce.dao.CartDao;
 import com.youtube.ecommerce.dao.OrdersDetailServiceDao;
 import com.youtube.ecommerce.dao.UserDao;
+import com.youtube.ecommerce.dto.CartDto;
+import com.youtube.ecommerce.dto.OrderDetailDto;
+import com.youtube.ecommerce.dto.ProductDto;
 import com.youtube.ecommerce.entity.*;
+import com.youtube.ecommerce.mapper.MapperUtil;
 import com.youtube.ecommerce.service.CartService;
 import com.youtube.ecommerce.service.OrdersDetailService;
 import com.youtube.ecommerce.service.ProductService;
@@ -17,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OrdersDetailServiceImpl implements OrdersDetailService {
@@ -36,13 +40,15 @@ public class OrdersDetailServiceImpl implements OrdersDetailService {
     private static final String CURRENCY = "USD";
     @Autowired
     private CartDao cartDao;
+    @Autowired
+    private MapperUtil mapperUtil;
 
     @Override
     public void placeOrder(OrderInput orderInput, boolean isSingleProductChekout) {
 
         List<OrderProductQuantity> orderProductQuantityList = orderInput.getOrderProductQuantityList();
         for (OrderProductQuantity o : orderProductQuantityList) {
-            Product product = productService.getPRoductById(o.getProductId());
+            Product product = mapperUtil.convert(productService.getPRoductById(o.getProductId()),new Product());
             String currentUserName = JwtRequestFilter.CURRENT_USER;
             User user = userService.findById(currentUserName).get();
             OrderDetail order = new OrderDetail(
@@ -58,7 +64,8 @@ public class OrdersDetailServiceImpl implements OrdersDetailService {
             );
             if (!isSingleProductChekout) {
                 List<Cart> carts = cartService.getCardDetailById();
-                carts.forEach(p -> cartDao.deleteById(p.getCartId()));
+               List<Cart> cartList=carts.stream().map(c->mapperUtil.convert(c,new Cart())).collect(Collectors.toList());
+                cartList.forEach(p -> cartDao.deleteById(p.getCartId()));
             }
             ordersDetailServiceDao.save(order);
         }
@@ -66,35 +73,40 @@ public class OrdersDetailServiceImpl implements OrdersDetailService {
     }
 
     @Override
-    public List<OrderDetail> getOrderDetails() {
+    public List<OrderDetailDto> getOrderDetails() {
         String userName = JwtRequestFilter.CURRENT_USER;
         User user = userService.findById(userName).get();
-        return ordersDetailServiceDao.findByUser(user);
+        return ordersDetailServiceDao.findByUser(user).stream()
+                .map(od->mapperUtil.convert(od,new OrderDetailDto()))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<OrderDetail> gettAllOrder(String status) {
+    public List<OrderDetailDto> gettAllOrder(String status) {
         List<OrderDetail> orderDetailList = new ArrayList<>();
 
         if (status.equals("All")) {
             ordersDetailServiceDao.findAll().forEach(
                     x -> orderDetailList.add(x)
             );
-            return orderDetailList;
+            return orderDetailList.stream().map(ol->mapperUtil.convert(ol,new OrderDetailDto()))
+                    .collect(Collectors.toList());
         } else {
             ordersDetailServiceDao.findByOrderStatus(status).forEach(
                     x -> orderDetailList.add(x)
             );
-            return orderDetailList;
+            return orderDetailList.stream().map(ol->mapperUtil.convert(ol,new OrderDetailDto()))
+                    .collect(Collectors.toList());
         }
 
     }
 
     @Override
-    public OrderDetail markOrderAsDelivere(Long id) {
+    public OrderDetailDto markOrderAsDelivere(Long id) {
         OrderDetail orderDetail = ordersDetailServiceDao.findById(id).get();
         orderDetail.setOrderStatus(ORDER_DELIVERED);
-        return ordersDetailServiceDao.save(orderDetail);
+        ordersDetailServiceDao.save(orderDetail);
+        return mapperUtil.convert(orderDetail,new OrderDetailDto());
     }
 
     @Override
