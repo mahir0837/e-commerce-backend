@@ -29,6 +29,12 @@ public class Product {
     @JsonIgnore
     private Category productCategory;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "brand_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
+    private Brand productBrand;
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "product_images",
             joinColumns = {
@@ -39,6 +45,7 @@ public class Product {
             }
     )
     private Set<ImageModel> productImages;
+
 
 
 

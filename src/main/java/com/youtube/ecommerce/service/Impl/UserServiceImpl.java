@@ -72,6 +72,12 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @Override
+    public User getUserDetails(String userName) {
+        User user=userDao.findById(userName).get();
+        return user;
+    }
+
     public String getEncodedPassword(String password) {
         return passwordEncoder.encode(password);
     }

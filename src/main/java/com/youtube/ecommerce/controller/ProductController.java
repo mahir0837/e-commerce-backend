@@ -25,16 +25,29 @@ public class ProductController {
     @PreAuthorize("hasRole('Admin')")
     @PostMapping(value = {"/addNewProduct"}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Product> addNewProduct(@RequestPart("product") ProductDto productDto,
-                                                    @RequestPart("imageFile") MultipartFile[] file) {
+                                                 @RequestPart("imageFile") MultipartFile[] file) {
         return ResponseEntity.ok(productService.addNewProduct(productDto, file));
     }
 
 
+    @GetMapping("/getProducts")
+    public ResponseEntity<List<Product>> getProducts(@RequestParam(defaultValue = "0") int pageNumber,
+                                                       @RequestParam(defaultValue = "") String searchKey) {
+        return ResponseEntity.ok(productService.listProducts(pageNumber, searchKey));
+    }
     @GetMapping("/getAllProducts")
     public ResponseEntity<List<Product>> getAllProduct(@RequestParam(defaultValue = "0") int pageNumber,
-                                                          @RequestParam(defaultValue = "") String searchKey,
-                                                          @RequestParam(defaultValue ="0")Long categoryId) {
-        return ResponseEntity.ok(productService.listAllProduct(pageNumber, searchKey,categoryId));
+                                                       @RequestParam(defaultValue = "") String searchKey,
+                                                       @RequestParam(defaultValue = "0") Long categoryId,
+                                                       @RequestParam(defaultValue = "0") Long productBrandId,
+                                                       @RequestParam(defaultValue = "0") int selectedSortValue) {
+        return ResponseEntity.ok(productService.listAllProduct(pageNumber, searchKey, categoryId,productBrandId,selectedSortValue));
+    }
+    @GetMapping("/getProductsInCategory")
+    public ResponseEntity<List<Product>> getProductsInCategory(@RequestParam(defaultValue = "0") int pageNumber,
+                                                       @RequestParam(defaultValue = "") String searchKey,
+                                                       @RequestParam(defaultValue = "0") Long categoryId) {
+        return ResponseEntity.ok(productService.listAllProductBaseOnTheCategory(pageNumber, searchKey, categoryId));
     }
 
     @PreAuthorize("hasRole('Admin')")
@@ -51,7 +64,7 @@ public class ProductController {
     @PreAuthorize("hasRole('User')")
     @GetMapping("/getProductDetails/{isSingleProductChekout}/{productId}")
     public ResponseEntity<List<Product>> getProductDetails(@PathVariable(name = "isSingleProductChekout") boolean isSingleProductCheckout,
-                                                              @PathVariable("productId") Long productId) {
+                                                           @PathVariable("productId") Long productId) {
         return ResponseEntity.ok(productService.getProductDetails(isSingleProductCheckout, productId));
     }
 }

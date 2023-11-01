@@ -1,13 +1,10 @@
 package com.youtube.ecommerce.service.Impl;
 
+import com.youtube.ecommerce.dao.BrandDao;
 import com.youtube.ecommerce.dao.CategoryDao;
 import com.youtube.ecommerce.dao.ProductDao;
-import com.youtube.ecommerce.dto.CartDto;
 import com.youtube.ecommerce.dto.ProductDto;
-import com.youtube.ecommerce.entity.Cart;
-import com.youtube.ecommerce.entity.Category;
-import com.youtube.ecommerce.entity.ImageModel;
-import com.youtube.ecommerce.entity.Product;
+import com.youtube.ecommerce.entity.*;
 import com.youtube.ecommerce.mapper.MapperUtil;
 import com.youtube.ecommerce.service.CartService;
 import com.youtube.ecommerce.service.CategoryService;
@@ -38,6 +35,8 @@ public class ProductServiceImpl implements ProductService {
     private CategoryService categoryService;
     @Autowired
     private CategoryDao categoryDao;
+    @Autowired
+    private BrandDao brandDao;
 
     @Override
     public Product addNewProduct(ProductDto productDto, MultipartFile[] file) {
@@ -51,7 +50,9 @@ public class ProductServiceImpl implements ProductService {
             product.setProductDiscountedPrice(productDto.getProductDiscountedPrice());
             product.setProductActualPrice(productDto.getProductActualPrice());
             Category category=categoryDao.findById(productDto.getProductCategory()).get();
+            Brand brand=brandDao.findById(productDto.getProductBrand()).get();
             product.setProductCategory(category);
+            product.setProductBrand(brand);
             return  productDao.save(product);
 
 
@@ -62,23 +63,38 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> listAllProduct(int pageNumber, String searchKey, Long categoryId) {
+    public List<Product> listAllProduct(int pageNumber, String searchKey, Long categoryId,
+                                        Long productBrandId, int selectedSortValue) {
         Pageable pageable = PageRequest.of(pageNumber, 4);
 
-        if (searchKey.equals("")&& categoryId==0) {
+        if (searchKey.equals("")&& categoryId==0&&productBrandId==0) {
             List<Product>productList= productDao.findAllProduct(pageable);
             return productList;
         } else {
-            List<Product>productList= productDao.findProductsWithKey(searchKey, searchKey, categoryId,pageable);
+            if (selectedSortValue==1){
+                List<Product>productList= productDao.sortByPriceLoverToHigh(searchKey, searchKey,
+                        categoryId,productBrandId,pageable);
+                return productList;
+            } else if (selectedSortValue==2) {
+                List<Product>productList= productDao.sortByPriceLHighToLow(searchKey, searchKey,
+                        categoryId,productBrandId,pageable);
+                return productList;
+            } else if (selectedSortValue==3) {
+                List<Product>productList= productDao.sortByProductAlpAtoZ(searchKey, searchKey,
+                        categoryId,productBrandId,pageable);
+                return productList;
+            } else if (selectedSortValue==4) {
+                List<Product>productList= productDao.sortByProductAlpZtoA(searchKey, searchKey,
+                        categoryId,productBrandId,pageable);
+                return productList;
+            }
+            List<Product>productList= productDao.findProductsWithKey(searchKey, searchKey,
+                    categoryId,productBrandId,pageable);
             return productList;
         }
 
     }
 
-    @Override
-    public Product updateProduct(Product product, MultipartFile[] file) {
-        return null;
-    }
 
     @Override
     public void deleteProduct(Long Id) {
@@ -106,6 +122,31 @@ public class ProductServiceImpl implements ProductService {
 
         }
 
+    }
+
+    @Override
+    public List<Product> listProducts(int pageNumber, String searchKey) {
+        Pageable pageable = PageRequest.of(pageNumber, 4);
+
+        if (searchKey.equals("")) {
+            List<Product>productList= productDao.findAllProduct(pageable);
+            return productList;
+        } else {
+            List<Product>productList= productDao.findProducts(searchKey, searchKey,pageable);
+            return productList;
+        }
+    }
+
+    @Override
+    public List<Product> listAllProductBaseOnTheCategory(int pageNumber, String searchKey, Long categoryId) {
+        Pageable pageable = PageRequest.of(pageNumber, 4);
+        if (searchKey.equals("")) {
+            List<Product>productList= productDao.findAllProduct(pageable);
+            return productList;
+        } else {
+            List<Product>productList= productDao.findAllProductBaseOnTheCategory(searchKey, searchKey,categoryId,pageable);
+            return productList;
+        }
     }
 
     public Set<ImageModel> uploadImage(MultipartFile[] multipartFiles) throws IOException {

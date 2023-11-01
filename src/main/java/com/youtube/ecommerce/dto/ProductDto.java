@@ -22,6 +22,7 @@ public class ProductDto {
     private Double productDiscountedPrice;
     private Double productActualPrice;
     private Long productCategory;
+    private Long productBrand;
     private Set<ImageModel> productImages;
 
 

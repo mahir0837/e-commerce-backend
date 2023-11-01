@@ -9,4 +9,6 @@ public interface UserService {
     void initRoleAndUser();
 
     User registerNewUser(User user);
+
+    User getUserDetails(String userName);
 }
