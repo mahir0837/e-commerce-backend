@@ -9,19 +9,20 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.youtube</groupId>
-    <artifactId>ecommerce</artifactId>
+    <artifactId>e-commerce-backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>e-commerce-backend</name>
     <description>API's for e commerce application</description>
-    <properties>
-        <java.version>1.8</java.version>
-    </properties>
+        <properties>
+            <maven.compiler.source>11</maven.compiler.source>
+            <maven.compiler.target>11</maven.compiler.target>
+        </properties>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
-        <!-- Other dependencies -->
+
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
@@ -95,6 +96,7 @@
                 </configuration>
             </plugin>
         </plugins>
+        <finalName>spring_rest_docker</finalName>
     </build>
 
 </project>
