@@ -9,6 +9,7 @@ import com.youtube.ecommerce.mapper.MapperUtil;
 import com.youtube.ecommerce.service.CartService;
 import com.youtube.ecommerce.service.CategoryService;
 import com.youtube.ecommerce.service.ProductService;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -49,8 +50,8 @@ public class ProductServiceImpl implements ProductService {
             product.setProductDescription(productDto.getProductDescription());
             product.setProductDiscountedPrice(productDto.getProductDiscountedPrice());
             product.setProductActualPrice(productDto.getProductActualPrice());
-            Category category=categoryDao.findById(productDto.getProductCategory()).get();
-            Brand brand=brandDao.findById(productDto.getProductBrand()).get();
+            Category category=categoryDao.findById(productDto.getProductCategory()).orElseThrow(()->new NotFoundException("Category Not Found"));
+            Brand brand=brandDao.findById(productDto.getProductBrand()).orElseThrow(()->new NotFoundException("Brand Not Found"));
             product.setProductCategory(category);
             product.setProductBrand(brand);
             return  productDao.save(product);

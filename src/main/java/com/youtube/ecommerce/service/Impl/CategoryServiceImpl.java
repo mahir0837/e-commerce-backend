@@ -7,6 +7,7 @@ import com.youtube.ecommerce.mapper.MapperUtil;
 import com.youtube.ecommerce.service.CategoryService;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,8 +23,6 @@ public class CategoryServiceImpl implements CategoryService {
         this.mapperUtil = mapperUtil;
     }
 
-
-
     @Override
     public Category addNewCategory(Category category) {
 
@@ -32,6 +31,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<CategoryDto> getCategories() {
+
         return categoryDao.findAll().stream().
                 map(c->mapperUtil.convert(c,new CategoryDto())).
                 collect(Collectors.toList());

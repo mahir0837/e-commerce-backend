@@ -17,7 +17,6 @@ public class CategoryController {
     @Autowired
     CategoryService categoryService;
 
-
     @PreAuthorize("hasRole('Admin')")
     @PostMapping("/addNewCategory")
     public Category addNewCategory(@RequestBody Category category){

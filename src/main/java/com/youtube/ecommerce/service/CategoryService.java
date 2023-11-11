@@ -16,5 +16,4 @@ public interface CategoryService {
 
     CategoryDto getCategoryById(Long id);
 
-
 }

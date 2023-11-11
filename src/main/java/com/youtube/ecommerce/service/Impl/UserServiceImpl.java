@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
         roleDao.save(userRole);
 
         User adminUser = new User();
-        adminUser.setUserName("admin123");
+        adminUser.setUserName("admin123@admin.com");
         adminUser.setUserPassword(getEncodedPassword("admin@pass"));
         adminUser.setUserFirstName("admin");
         adminUser.setUserLastName("admin");
@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService {
         userDao.save(adminUser);
 
         User user = new User();
-        user.setUserName("raj123");
+        user.setUserName("raj123@raj.com");
         user.setUserPassword(getEncodedPassword("raj@123"));
         user.setUserFirstName("raj");
         user.setUserLastName("sharma");

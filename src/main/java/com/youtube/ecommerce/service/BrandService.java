@@ -9,4 +9,5 @@ public interface BrandService {
     List<Brand> getAllBrand(Long categoryId);
 
     Brand addNewBrand(BrandDto dto);
+    
 }

@@ -1,33 +1,83 @@
-version: "3.7"
+#version: "3.8"
+#services:
+#  app :
+#    image : spring_rest_docker:latest
+#    restart: always
+#    ports:
+#      - 9091:9090
+#    environment:
+#      SPRING_DATASOURCE_URL : jdbc:mysql://mysqldb:3306/e_commerce_db?allowPublicKeyRetrieval=true
+#    depends_on:
+#      - mysqldb
+#
+#  mysqldb:
+#    image: mysql:8.0.27
+#    environment:
+#      PORTS : 3306
+#      DATABASE_HOST : docker-mysql
+#      MYSQL_ROOT_PASSWORD: admin123
+#      MYSQL_DATABASE: e_commerce_db
+#      MYSQL_USER_NAME: root
+#      MYSQL_PASSWORD: admin123
+
+#version: "3.8"
+#
+#services:
+#  mysqldb:
+#    image: mysql:5.7
+#    restart: always
+#    env_file: ./.env
+#    environment:
+#      - MYSQL_ROOT_PASSWORD=${MYSQLDB_ROOT_PASSWORD}
+#      - MYSQL_DATABASE=${MYSQLDB_DATABASE}
+#    ports:
+#      - ${MYSQLDB_LOCAL_PORT}:${MYSQLDB_DOCKER_PORT}
+#    volumes:
+#      - db:/var/lib/mysql
+#  app:
+#    depends_on:
+#      - mysqldb
+#    build :
+#      context: .
+#      dockerfile: Dockerfile
+#    restart: on-failure
+#    env_file: ./.env
+#    ports:
+#      - ${SPRING_LOCAL_PORT}:${SPRING_DOCKER_PORT}
+#    environment:
+#      SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/e_commerce_db?allowPublicKeyRetrieval=true
+#      SPRING_DATASOURCE_USERNAME: ${MYSQLDB_USER_NAME}
+#      SPRING_DATASOURCE_PASSWORD: ${MYSQLDB_ROOT_PASSWORD}
+#      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQL5InnoDBDialect
+#      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+#
+#    volumes:
+#      - .m2:/root/.m2
+#    stdin_open: true
+#    tty: true
+#
+#volumes:
+#  db:
+#  .m2:
+
+version : "3.8"
 services:
-  api_service:
-    build:
-      context: .
-      dockerfile: Dockerfile
+  server :
+    build: .
     restart: always
-    ports:
-      - 9091:9090
-    networks:
-      - springapimysql-net
-    environment:
-      - spring.datasource.url=jdbc:mysql://mysqldb:3306/e_commerce_db?allowPublicKeyRetrieval=true  # Use the service name "mysqldb" as the host
+    ports :
+      - 9090:9090
     depends_on:
       - mysqldb
-
-    volumes:
-      - .m2:/root/.m2
-
-  mysqldb:
-    image: "mysql:8.0"
+  mysqldb :
+    image: "mysql:5.7"
     restart: always
     ports:
       - 3307:3306
-    networks:
-      - springapimysql-net
     environment:
       MYSQL_DATABASE: e_commerce_db
-      MYSQL_USER: root
+      MYSQL_USER: mike
       MYSQL_PASSWORD: admin123
       MYSQL_ROOT_PASSWORD: admin123
-networks:
-  springapimysql-net:
+
+
