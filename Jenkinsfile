@@ -9,7 +9,7 @@ pipeline {
             steps {
                 script {
                     // Build the Docker image
-                    sh 'docker build -t $DOCKER_IMAGE -f Dockerfile .'
+                    sh 'docker build -t $DOCKER_IMAGE .'
 
                     // Push the Docker image to the registry
                     sh 'docker push $DOCKER_IMAGE'
